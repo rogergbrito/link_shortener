@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  link_shortener_database:
+    image: postgres:latest
+    restart: always
+    ports:
+      - "3002:5432"
+    env_file:
+      - ./db.env
+    volumes:
+      - link_shortener_data:/var/lib/postgresql/data
+
+volumes:
+  link_shortener_data:
