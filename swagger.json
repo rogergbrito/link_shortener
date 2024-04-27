@@ -1,0 +1,497 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+      "title": "Link Shortener"
+  },
+  "servers": [
+      {
+          "url": "",
+          "description": "Link Shortener"
+      }
+  ],
+  "components": {
+      "securitySchemes": {
+          "Bearer Token": {
+              "type": "http",
+              "scheme": "bearer"
+            }
+      }
+  },
+  "paths": {
+      "/users/register": {
+          "post": {
+              "summary": "Criar usuário",
+              "description": "Cria um usuário na base.",
+              "tags": [
+                  "Users"
+              ],
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "required": [
+                                  "name",
+                                  "password",
+                                  "email"
+                              ],
+                              "properties": {
+                                  "name": {
+                                      "title": "name",
+                                      "type": "string"
+                                  },
+                                  "password": {
+                                      "title": "password",
+                                      "type": "string"
+                                  },
+                                  "email": {
+                                      "title": "email",
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "500": {
+                      "description": "Internal Server Error"
+                  },
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "errors": {
+                                          "title": "message",
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "200": {
+                      "description": "OK",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "id": {
+                                          "type": "number"
+                                      },
+                                      "name": {
+                                          "type": "string"
+                                      },
+                                      "email": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/users/login": {
+          "post": {
+              "summary": "Login",
+              "description": "Faz login com o usuário criado.",
+              "tags": [
+                  "Users"
+              ],
+              "security": [
+                  {
+                    "Bearer Token": []
+                  }
+              ],
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "required": [
+                                  "email",
+                                  "password"
+                              ],
+                              "properties": {
+                                  "email": {
+                                      "title": "email",
+                                      "type": "string"
+                                  },
+                                  "password": {
+                                      "title": "password",
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "500": {
+                      "description": "Internal Server Error"
+                  },
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "errors": {
+                                          "title": "message",
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "200": {
+                      "description": "OK",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "token": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/shortener": {
+          "post": {
+              "summary": "Encurtar link",
+              "description": "Encurta um link para ser usado.",
+              "tags": [
+                  "Links"
+              ],
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "required": [
+                                  "url"
+                              ],
+                              "properties": {
+                                  "url": {
+                                      "title": "url",
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "500": {
+                      "description": "Internal Server Error"
+                  },
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "errors": {
+                                          "title": "message",
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "201": {
+                      "description": "OK",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "shortenedUrl": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/{shortenedUrl}": {
+          "get": {
+              "summary": "Redirecionar link",
+              "description": "Redireciona o link encurtado para o link original.",
+              "tags": [
+                  "Links"
+              ],
+              "parameters": [
+                {
+                  "name": "shortenedUrl",
+                  "in": "path",
+                  "description": "Link encurtado",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                  "500": {
+                      "description": "Internal Server Error"
+                  },
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "errors": {
+                                          "title": "message",
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "200": {
+                      "description": "OK",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "url": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/": {
+          "get": {
+              "summary": "Pegar links encurtados pelo usuário",
+              "description": "Pega todos os links encurtados pelo usuário.",
+              "tags": [
+                  "Links"
+              ],
+              "security": [
+                  {
+                      "Bearer Token": []
+                  }
+              ],
+              "responses": {
+                  "500": {
+                      "description": "Internal Server Error"
+                  },
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "errors": {
+                                          "title": "message",
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "200": {
+                      "description": "OK",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "array",
+                                  "items": {
+                                      "properties": {
+                                          "id": {
+                                              "type": "number"
+                                          },
+                                          "originalUrl": {
+                                              "type": "string"
+                                          },
+                                          "shortenedUrl": {
+                                              "type": "string"
+                                          },
+                                          "accessCount": {
+                                              "type": "number"
+                                          },
+                                          "updated_at": {
+                                              "type": "string"
+                                          },
+                                          "created_at": {
+                                              "type": "string"
+                                          }
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/{id}": {
+          "put": {
+              "summary": "Atualizar link",
+              "description": "Atualiza o link encurtado.",
+              "tags": [
+                  "Links"
+              ],
+              "security": [
+                  {
+                      "Bearer Token": []
+                  }
+              ],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "description": "ID do link encurtado",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "requestBody": {
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "required": [
+                                  "url"
+                              ],
+                              "properties": {
+                                  "originalUrl": {
+                                      "title": "originalUrl",
+                                      "type": "string"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "500": {
+                      "description": "Internal Server Error"
+                  },
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "errors": {
+                                          "title": "message",
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "200": {
+                      "description": "OK",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string"
+                                      },
+                                      "originalUrl": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      },
+      "/{id} ": {
+          "delete": {
+              "summary": "Deletar link",
+              "description": "Deleta o link encurtado.",
+              "tags": [
+                  "Links"
+              ],
+              "security": [
+                  {
+                      "Bearer Token": []
+                  }
+              ],
+              "parameters": [
+                {
+                  "name": "id",
+                  "in": "path",
+                  "description": "ID do link encurtado",
+                  "required": true,
+                  "type": "string"
+                }
+              ],
+              "responses": {
+                  "500": {
+                      "description": "Internal Server Error"
+                  },
+                  "400": {
+                      "description": "Bad Request",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "errors": {
+                                          "title": "message",
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "200": {
+                      "description": "OK",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "message": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  }
+              }
+          }
+      }
+  }
+}

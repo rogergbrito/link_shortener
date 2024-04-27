@@ -1,6 +1,17 @@
 version: '3.9'
 
 services:
+  # link_shortener:
+  #   image: app_link:1.0.3
+  #   restart: always
+  #   ports:
+  #     - "7001:3001"
+  #   networks:
+  #     - network_link_shortener
+  #   command: /bin/sh -c "npx prisma migrate dev --name create_all_tables"
+  #   depends_on:
+  #     - link_shortener_database
+
   link_shortener_database:
     image: postgres:latest
     restart: always
@@ -10,6 +21,11 @@ services:
       - ./db.env
     volumes:
       - link_shortener_data:/var/lib/postgresql/data
+    networks:
+      - network_link_shortener
 
 volumes:
   link_shortener_data:
+
+networks:
+  network_link_shortener:

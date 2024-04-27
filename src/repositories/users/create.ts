@@ -5,6 +5,11 @@ const create = async (data: Register) => {
   try {
     const user = await database.user.create({
       data,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
     });
 
     return user;
